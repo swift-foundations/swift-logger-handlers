@@ -1,0 +1,8 @@
+# .github/metadata.yaml
+description: "Focused log handlers and handler composition for Swift."
+topics:
+  - foundations
+  - logging
+homepage: "https://swift-institute.org"
+readme:
+  family: E
