@@ -81,7 +81,9 @@ private struct Recording: LogHandler {
         self.record = record
         self.logLevel = level
     }
+}
 
+extension Recording {
     subscript(metadataKey key: String) -> Logger.Metadata.Value? {
         get { metadata[key] }
         set { metadata[key] = newValue }

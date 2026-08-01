@@ -31,9 +31,14 @@ extension `Logger.Handler.File Tests`.Unit {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "unit.log")
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
         defer { try? FileManager.default.removeItem(at: directory) }
 
-        guard let handler = try? Logger.Handler.File(label: "tests", url: url) else {
+        let handler: Logger.Handler.File
+        do throws(CocoaError) {
+            handler = try Logger.Handler.File(label: "tests", url: url)
+        } catch {
             Issue.record("expected file handler initialization to succeed")
             return
         }
@@ -61,6 +66,8 @@ extension `Logger.Handler.File Tests`.`Edge Case` {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "close.log")
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let handler = try Logger.Handler.File(label: "tests", url: url)
@@ -88,6 +95,8 @@ extension `Logger.Handler.File Tests`.`Edge Case` {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "post-close.log")
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let handler = try Logger.Handler.File(label: "tests", url: url)
@@ -120,15 +129,18 @@ extension `Logger.Handler.File Tests`.Integration {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "integration.log")
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
         defer { try? FileManager.default.removeItem(at: directory) }
 
-        guard
-            var handler = try? Logger.Handler.File(
+        var handler: Logger.Handler.File
+        do throws(CocoaError) {
+            handler = try Logger.Handler.File(
                 label: "tests",
                 url: url,
                 metadataProvider: Logger.MetadataProvider { ["provider": "yes"] }
             )
-        else {
+        } catch {
             Issue.record("expected file handler initialization to succeed")
             return
         }
@@ -146,6 +158,8 @@ extension `Logger.Handler.File Tests`.Integration {
             )
         )
 
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.String(contentsOf:encoding:) is an untyped cross-module throwing API.
         guard let output = try? String(contentsOf: url, encoding: .utf8) else {
             Issue.record("expected file handler output to be readable")
             return

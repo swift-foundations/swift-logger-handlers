@@ -34,6 +34,9 @@ extension Logger.Handler {
         ) throws(CocoaError) {
             let handle: FileHandle
 
+            // swift-linter:disable:next do throws for typed catch
+            // REASON: Foundation.FileManager/FileHandle throw untyped cross-module
+            // errors here; the failure is normalized to CocoaError below.
             do {
                 try FileManager.default.createDirectory(
                     at: url.deletingLastPathComponent(),
@@ -78,6 +81,8 @@ extension Logger.Handler.File {
 
     public func log(event: LogEvent) {
         queue.sync {
+            // swift-linter:disable:next do throws for typed catch
+            // REASON: Foundation.FileHandle.write(contentsOf:) is an untyped cross-module throwing API.
             do {
                 try handle.write(contentsOf: Data((line(for: event, at: Date()) + "\n").utf8))
             } catch {
@@ -104,6 +109,15 @@ extension Logger.Handler.File {
     ///
     /// - Throws: ``CocoaError`` if the handle could not be flushed or closed.
     public func close() throws(CocoaError) {
+        // DispatchQueue.sync(execute:) is `rethrows`, not typed-throws-generic, and
+        // an explicit `throws(CocoaError)` annotation on the closure below crashes
+        // the 6.3.3 compiler when nested inside this do/catch (toolchain defect,
+        // not a source issue) — so the closure stays unannotated and the outer
+        // do/catch re-normalizes whatever it throws.
+        // swift-linter:disable:next do throws for typed catch
+        // REASON: Dispatch.DispatchQueue.sync(execute:) is an untyped rethrows API
+        // wrapping Foundation.FileHandle.synchronize()/close(), themselves untyped
+        // cross-module throwing APIs.
         do {
             try queue.sync {
                 try handle.synchronize()

@@ -57,6 +57,8 @@ extension Logger.Handler.Console {
 
     public func log(event: LogEvent) {
         queue.sync {
+            // swift-linter:disable:next do throws for typed catch
+            // REASON: Foundation.FileHandle.write(contentsOf:) is an untyped cross-module throwing API.
             do {
                 try FileHandle.standardError.write(
                     contentsOf: Data((line(for: event, at: Date()) + "\n").utf8)
