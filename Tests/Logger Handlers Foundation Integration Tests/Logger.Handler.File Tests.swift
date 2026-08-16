@@ -52,10 +52,18 @@ extension `Logger.Handler.File Tests`.Unit {
 extension `Logger.Handler.File Tests`.`Edge Case` {
     @Test
     func `invalid parent path throws a Cocoa error`() {
+        let parent = FileManager.default.temporaryDirectory.appending(
+            path: UUID().uuidString
+        )
+        #expect(FileManager.default.createFile(atPath: parent.path, contents: nil))
+        // swift-linter:disable:next try optional
+        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+        defer { try? FileManager.default.removeItem(at: parent) }
+
         #expect(throws: CocoaError.self) {
             try Logger.Handler.File(
                 label: "tests",
-                url: URL(fileURLWithPath: "/dev/null/log-handler-tests.log")
+                url: parent.appending(path: "log-handler-tests.log")
             )
         }
     }
