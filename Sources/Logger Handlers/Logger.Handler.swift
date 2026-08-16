@@ -17,6 +17,9 @@ extension Logger {
 }
 
 /// Composes two handlers into a single handler that forwards records to both.
-public func + (lhs: any LogHandler, rhs: any LogHandler) -> any LogHandler {
+public func + <LHS: LogHandler, RHS: LogHandler>(
+    lhs: LHS,
+    rhs: RHS
+) -> MultiplexLogHandler {
     MultiplexLogHandler([lhs, rhs])
 }
