@@ -1,22 +1,10 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-logger-handlers open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-logger-handlers
-// project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import Dispatch
 import Foundation
 public import Logger_Handlers
 public import Logging
 
 extension Logger.Handler {
-    /// A serial console handler that writes UTC-timestamped records to standard error.
+
     public struct Console: Logging.LogHandler {
         private let queue: DispatchQueue
         private let formatter: DateFormatter
@@ -57,19 +45,13 @@ extension Logger.Handler.Console {
 
     public func log(event: LogEvent) {
         queue.sync {
-            // swift-linter:disable:next do throws for typed catch
-            // REASON: Foundation.FileHandle.write(contentsOf:) is an untyped cross-module throwing API.
+
             do {
                 try FileHandle.standardError.write(
                     contentsOf: Data((line(for: event, at: Date()) + "\n").utf8)
                 )
             } catch {
-                // Console logging is best-effort: a write failure (for example, a
-                // closed or invalid file descriptor after `close()`) must never crash
-                // the process. `FileHandle.write(_:)` could raise an uncatchable
-                // Objective-C exception on failure; the throwing `write(contentsOf:)`
-                // API lets us define the failure policy explicitly instead: drop the
-                // record.
+
             }
         }
     }

@@ -1,15 +1,3 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-logger-handlers open source project
-//
-// Copyright (c) 2026 Coen ten Thije Boonkkamp and the swift-logger-handlers
-// project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import Foundation
 import Logger_Handlers
 import Logging
@@ -31,8 +19,7 @@ extension `Logger.Handler.File Tests`.Unit {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "unit.log")
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let handler: Logger.Handler.File
@@ -56,8 +43,7 @@ extension `Logger.Handler.File Tests`.`Edge Case` {
             path: UUID().uuidString
         )
         #expect(FileManager.default.createFile(atPath: parent.path, contents: nil))
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+
         defer { try? FileManager.default.removeItem(at: parent) }
 
         #expect(throws: CocoaError.self) {
@@ -74,8 +60,7 @@ extension `Logger.Handler.File Tests`.`Edge Case` {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "close.log")
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let handler = try Logger.Handler.File(label: "tests", url: url)
@@ -103,16 +88,12 @@ extension `Logger.Handler.File Tests`.`Edge Case` {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "post-close.log")
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+
         defer { try? FileManager.default.removeItem(at: directory) }
 
         let handler = try Logger.Handler.File(label: "tests", url: url)
         try handler.close()
 
-        // Must not crash: before this fix, a write against an invalid/closed file
-        // descriptor went through `FileHandle.write(_:)`, which can raise an
-        // uncatchable Objective-C exception and take the whole process down.
         handler.log(
             event: LogEvent(
                 level: .info,
@@ -137,8 +118,7 @@ extension `Logger.Handler.File Tests`.Integration {
             path: UUID().uuidString
         )
         let url = directory.appending(path: "integration.log")
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.FileManager.removeItem(at:) is an untyped cross-module throwing API.
+
         defer { try? FileManager.default.removeItem(at: directory) }
 
         var handler: Logger.Handler.File
@@ -166,8 +146,6 @@ extension `Logger.Handler.File Tests`.Integration {
             )
         )
 
-        // swift-linter:disable:next try optional
-        // REASON: Foundation.String(contentsOf:encoding:) is an untyped cross-module throwing API.
         guard let output = try? String(contentsOf: url, encoding: .utf8) else {
             Issue.record("expected file handler output to be readable")
             return
