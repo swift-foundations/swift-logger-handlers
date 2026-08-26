@@ -1,6 +1,6 @@
 # swift-logger-handlers
 
-[![CI](https://github.com/swift-foundations/swift-logger-handlers/actions/workflows/ci.yml/badge.svg)](https://github.com/swift-foundations/swift-logger-handlers/actions/workflows/ci.yml)
+[![CI](https://github.com/swift-compositions/swift-logger-handlers/actions/workflows/ci.yml/badge.svg)](https://github.com/swift-compositions/swift-logger-handlers/actions/workflows/ci.yml)
 ![Development Status](https://img.shields.io/badge/status-active--development-orange.svg)
 
 Focused handlers and handler composition for
@@ -17,7 +17,7 @@ Focused handlers and handler composition for
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-foundations/swift-logger-handlers.git", branch: "main")
+    .package(url: "https://github.com/swift-compositions/swift-logger-handlers.git", branch: "main")
 ]
 ```
 
